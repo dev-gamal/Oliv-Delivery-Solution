@@ -16,6 +16,7 @@ import ma.skaii.oliv.dto.livreur.DisponibiliteRequest;
 import ma.skaii.oliv.dto.livreur.PositionGpsRequest;
 import ma.skaii.oliv.dto.livreur.ProfilLivreurResponse;
 import ma.skaii.oliv.dto.preuve.PreuveSubmitRequest;
+import ma.skaii.oliv.dto.tracking.TrackingPositionEvent;
 import ma.skaii.oliv.mapper.CommandeMapper;
 import ma.skaii.oliv.mapper.DispatchMapper;
 import ma.skaii.oliv.mapper.LivreurMapper;
@@ -26,6 +27,7 @@ import ma.skaii.oliv.security.CustomUserDetails;
 import ma.skaii.oliv.service.CommandeService;
 import ma.skaii.oliv.service.LivreurService;
 import ma.skaii.oliv.service.MatchingDispatchService;
+import ma.skaii.oliv.service.TrackingTempsReelService;
 import ma.skaii.oliv.service.exception.BusinessRuleException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +46,7 @@ public class LivreurController {
     private final LivreurService livreurService;
     private final MatchingDispatchService matchingDispatchService;
     private final CommandeService commandeService;
+    private final TrackingTempsReelService trackingTempsReelService;
     private final ProfilLivreurRepository profilLivreurRepository;
     private final OffreCourseRepository offreCourseRepository;
     private final LivreurMapper livreurMapper;
@@ -61,14 +64,14 @@ public class LivreurController {
     }
 
     @PostMapping("/position")
-    public ResponseEntity<Void> actualiserPositionGps(
+    public ResponseEntity<TrackingPositionEvent> actualiserPositionGps(
             @Valid @RequestBody PositionGpsRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        livreurService.actualiserPositionGpsPendantCourse(
-                userDetails.getUtilisateur(), request.latitude(), request.longitude()
+        TrackingPositionEvent event = trackingTempsReelService.traiterEtDiffuserPosition(
+                userDetails.getUtilisateur(), request
         );
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(event);
     }
 
     @GetMapping("/offres")
