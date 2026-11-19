@@ -1,5 +1,6 @@
 package ma.skaii.oliv.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import lombok.RequiredArgsConstructor;
 import ma.skaii.oliv.domain.entity.Commande;
 import ma.skaii.oliv.dto.commande.SuiviDestinatairePublicResponse;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/public/suivi")
 @RequiredArgsConstructor
+@SecurityRequirements
 public class SuiviPublicController {
 
     private final CommandeRepository commandeRepository;
