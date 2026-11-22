@@ -33,21 +33,29 @@ public record CommandeCreateRequest(
         // Contenu & Conformité (Section 12.1)
         @NotBlank String natureContenu,
         @AssertTrue(message = "Vous devez certifier que le colis ne contient aucune marchandise interdite")
-        boolean declarationMarchandiseAutorisee,
+        Boolean declarationMarchandiseAutorisee,
         @PositiveOrZero Double poidsKg,
         String dimensionsCm,
         @PositiveOrZero BigDecimal valeurDeclareeDh,
 
         // Distance & Options (Section 9.4)
         @NotNull @Positive BigDecimal distanceItineraireKm,
-        boolean optionExpress,
-        boolean optionCreneauGaranti,
+        Boolean optionExpress,
+        Boolean optionCreneauGaranti,
         OffsetDateTime creneauDebut,
         OffsetDateTime creneauFin,
-        @Min(0) int nombreArretsSupplementaires,
-        boolean retourPointCollecteRequis,
+        @Min(0) Integer nombreArretsSupplementaires,
+        Boolean retourPointCollecteRequis,
 
         // Paiement & COD
         @NotNull ModePaiement modePaiement,
         @PositiveOrZero BigDecimal montantCodMarchandiseDh
-) {}
+) {
+    public CommandeCreateRequest {
+        if (declarationMarchandiseAutorisee == null) declarationMarchandiseAutorisee = false;
+        if (optionExpress == null) optionExpress = false;
+        if (optionCreneauGaranti == null) optionCreneauGaranti = false;
+        if (nombreArretsSupplementaires == null) nombreArretsSupplementaires = 0;
+        if (retourPointCollecteRequis == null) retourPointCollecteRequis = false;
+    }
+}

@@ -51,11 +51,12 @@ public class CommandeService {
         brouillon.setOrganisationPro(expediteur.getOrganisation());
         brouillon.setStatut(StatutCommande.BROUILLON);
         brouillon.setTokenSuiviDestinataire(UUID.randomUUID().toString());
+        brouillon.setDistanceFactureeKm(pricingEngineService.arrondirAuDemiSuperieur(brouillon.getDistanceItineraireKm()));
 
         Commande sauvegardee = commandeRepository.save(brouillon);
 
         // Historique initial
-        stateMachineService.changerStatut(sauvegardee, StatutCommande.BROUILLON, expediteur, "Création du brouillon");
+        stateMachineService.journaliserCreationInitiale(sauvegardee, expediteur, "Creation du brouillon");
         pricingEngineService.calculerEtFigerTarif(sauvegardee, modePaiement, montantCodDh);
 
         return sauvegardee;

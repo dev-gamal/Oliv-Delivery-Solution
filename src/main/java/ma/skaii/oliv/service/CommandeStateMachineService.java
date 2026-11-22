@@ -113,4 +113,17 @@ public class CommandeStateMachineService {
         historiqueStatutRepository.save(historique);
         return commandeRepository.save(commande);
     }
+
+    @Transactional
+    public void journaliserCreationInitiale(Commande commande, Utilisateur auteur, String motif) {
+        HistoriqueStatut historique = HistoriqueStatut.builder()
+                .commande(commande)
+                .ancienStatut(null)
+                .nouveauStatut(commande.getStatut())
+                .horodatage(OffsetDateTime.now())
+                .auteur(auteur)
+                .motifOuCommentaire(motif)
+                .build();
+        historiqueStatutRepository.save(historique);
+    }
 }
